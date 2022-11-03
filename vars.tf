@@ -29,10 +29,10 @@ variable "repository_branch" {
 
 variable "org" {
   description = "Harness org id to be created"
-  default = ["terra_id4","terra_id5"]
+  default = ["terra_id4","terra_id5","terra_id6"]
 }
 
 variable "project" {
   description = "Harness project id to be created"
-  default = ["terra_project","terra_project2"]
+  default = ["terra_project","terra_project2","terra_project3"]
 }

@@ -9,7 +9,7 @@ resource "harness_platform_project" "example" {
   identifier = var.project[count.index]
   name       = var.project[count.index]
   org_id     = var.org[count.index]
-    depends_on = [
+  depends_on = [
     harness_platform_organization.example
   ]
   count = length(var.project)
@@ -24,7 +24,7 @@ resource "harness_platform_pipeline" "example" {
   yaml       = <<-EOT
       pipeline:
           name: name
-          identifier: identifier
+          identifier: "terra_pipeline"
           allowStageExecutions: false
           projectIdentifier: ${var.project[count.index]}
           orgIdentifier: ${var.org[count.index]}
