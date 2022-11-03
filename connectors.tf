@@ -1,5 +1,5 @@
 # data "harness_secret_manager" "default" {
-#   default = true
+#   id = "harnessSecretManager"
 # }
 
 resource "harness_platform_secret_text" "github_token" {

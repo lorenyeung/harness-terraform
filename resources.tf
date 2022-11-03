@@ -16,39 +16,39 @@ resource "harness_platform_project" "example" {
 }
 
 resource "harness_platform_pipeline" "example" {
-  identifier = "terra_pipeline"
-  name       = "name"
+  identifier = "cd_example_pipeline"
+  name       = "cd_example_pipeline"
   org_id     = var.org[count.index]
   project_id = var.project[count.index]
   count = length(var.project)
   yaml       = <<-EOT
       pipeline:
-          name: name
-          identifier: "terra_pipeline"
+          name: cd_example_pipeline
+          identifier: "cd_example_pipeline"
           allowStageExecutions: false
           projectIdentifier: ${var.project[count.index]}
           orgIdentifier: ${var.org[count.index]}
           tags: {}
           stages:
               - stage:
-                  name: dep
-                  identifier: dep
+                  name: deploy
+                  identifier: deploy
                   description: ""
                   type: Deployment
                   spec:
                       serviceConfig:
-                          serviceRef: service
+                          serviceRef: cd_example_service_${var.project[count.index]}
                           serviceDefinition:
                               type: Kubernetes
                               spec:
                                   variables: []
                       infrastructure:
-                          environmentRef: testenv
+                          environmentRef: dev
                           infrastructureDefinition:
                               type: KubernetesDirect
                               spec:
-                                  connectorRef: testconf
-                                  namespace: test
+                                  connectorRef: k8s_connector_${var.project[count.index]}
+                                  namespace: dev
                                   releaseName: release-<+INFRA_KEY>
                           allowSimultaneousDeployments: false
                       execution:
@@ -111,4 +111,16 @@ resource "harness_platform_pipeline" "example" {
   depends_on = [
     harness_platform_project.example
   ]
+}
+
+resource "harness_platform_service" "example" {
+  identifier  = "cd_example_service_${var.project[count.index]}"
+  name        = "cd_example_service"
+  description = "test"
+  org_id      = var.org[count.index]
+  project_id  = var.project[count.index]
+  depends_on = [
+    harness_platform_project.example
+  ]
+    count = length(var.project)
 }

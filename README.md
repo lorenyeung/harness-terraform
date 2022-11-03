@@ -2,6 +2,29 @@ my workspace to convert https://github.com/harness/terraform-demo/tree/main/exam
 
 this is a WIP
 
+TODO:
+Platform:
+integrate into Harness platform as a 'golden pipeline'
+TF remote state storage
+
+Connectors/Cloud providers:
+k8s infra connector hook up
+delegate hook up
+
+k8s infra creation (?)
+delegate creation (?)
+service creation - done
+
+RBAC:
+RG per org/project
+roles per org/project
+groups per org/project
+
+Example Pipelines per project:
+CD
+CI
+STO
+
 Existing README below
 
 # Terraform Demo

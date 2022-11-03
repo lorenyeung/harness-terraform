@@ -1,7 +1,7 @@
 resource "harness_platform_connector_kubernetes" "demo" {
-  name = "${var.prefix}-kubernetes"
-  identifier = "hello"
-  tags = ["terraform:terraform"]
+  name = "k8s_connector_${var.project[count.index]}"
+  identifier = "k8s_connector_${var.project[count.index]}"
+  tags = ["terraform:terraform",var.org[count.index]]
   inherit_from_delegate {
     delegate_selectors = ["mac"]
   }
