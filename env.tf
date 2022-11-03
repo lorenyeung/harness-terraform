@@ -7,15 +7,30 @@ resource "harness_platform_environment" "dev" {
 }
 
 resource "harness_platform_infrastructure" "k8s_dev" {
-  identifier          = ""
-  project_id          = ""
-  org_id              = ""
+  identifier          = "k8s_dev_infra"
+  project_id          = var.project
+  org_id              = var.org
   name                = "k8s-dev"
-  //app_id              = harness_application.demo.id
   env_id              = harness_platform_environment.dev.identifier
-  type                = "KUBERNETES_CLUSTER"
-  deployment_type     = "KUBERNETES"
-  yaml                = ""
+  type                = "KubernetesDirect"
+  yaml                = <<-EOT
+    infrastructureDefinition:
+      name: ${harness_platform_environment.dev.name}
+      identifier: ${harness_platform_environment.dev.identifier}
+      description: ""
+      tags:
+        asda: ""
+      orgIdentifier: ${var.org}
+      projectIdentifier: ${var.project}
+      environmentRef: ${harness_platform_environment.dev.identifier}
+      deploymentType: Kubernetes
+      type: KubernetesDirect
+      spec:
+        connectorRef: account.colimak8s
+        namespace: dev
+        releaseName: release-<+INFRA_KEY>
+        allowSimultaneousDeployments: false
+      EOT
  
 /*  kubernetes {
     cloud_provider_name = harness_cloudprovider_kubernetes.demo.name
@@ -33,15 +48,30 @@ resource "harness_platform_environment" "stage" {
 }
 
 resource "harness_platform_infrastructure" "k8s_stage" {
-  identifier          = ""
-  project_id          = ""
-  org_id              = ""
+  identifier          = "k8s_stage_infra"
+  project_id          = var.project
+  org_id              = var.org
   name                = "k8s-stage"
-  //app_id              = harness_application.demo.id
-  env_id              = harness_platform_environment.stage.identifier
-  type                = "KUBERNETES_CLUSTER"
-  deployment_type     = "KUBERNETES"
-  yaml                = ""
+  env_id              = harness_platform_environment.dev.identifier
+  type                = "KubernetesDirect"
+  yaml                = <<-EOT
+    infrastructureDefinition:
+      name: ${harness_platform_environment.stage.name}
+      identifier: ${harness_platform_environment.stage.identifier}
+      description: ""
+      tags:
+        asda: ""
+      orgIdentifier: ${var.org}
+      projectIdentifier: ${var.project}
+      environmentRef: ${harness_platform_environment.stage.identifier}
+      deploymentType: Kubernetes
+      type: KubernetesDirect
+      spec:
+        connectorRef: account.colimak8s
+        namespace: stage
+        releaseName: release-<+INFRA_KEY>
+        allowSimultaneousDeployments: false
+      EOT
 
 /*  kubernetes {
     cloud_provider_name = harness_cloudprovider_kubernetes.demo.name
@@ -59,15 +89,30 @@ resource "harness_platform_environment" "prod" {
 }
 
 resource "harness_platform_infrastructure" "k8s_prod" {
-  identifier          = ""
-  project_id          = ""
-  org_id              = ""
+  identifier          = "k8s_prod_infra"
+  project_id          = var.project
+  org_id              = var.org
   name                = "k8s-prod"
-  //app_id              = harness_application.demo.id
   env_id              = harness_platform_environment.prod.identifier
-  type                = "KUBERNETES_CLUSTER"
-  deployment_type     = "KUBERNETES"
-  yaml                = ""
+  type                = "KubernetesDirect"
+  yaml                = <<-EOT
+    infrastructureDefinition:
+      name: ${harness_platform_environment.prod.name}
+      identifier: ${harness_platform_environment.prod.identifier}
+      description: ""
+      tags:
+        asda: ""
+      orgIdentifier: ${var.org}
+      projectIdentifier: ${var.project}
+      environmentRef: ${harness_platform_environment.prod.identifier}
+      deploymentType: Kubernetes
+      type: KubernetesDirect
+      spec:
+        connectorRef: account.colimak8s
+        namespace: prod
+        releaseName: release-<+INFRA_KEY>
+        allowSimultaneousDeployments: false
+      EOT
 
 /*  kubernetes {
     cloud_provider_name = harness_cloudprovider_kubernetes.demo.name
