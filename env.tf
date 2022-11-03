@@ -10,24 +10,23 @@ resource "harness_platform_environment" "dev" {
   count = length(var.project)
 }
 
-/*
 resource "harness_platform_infrastructure" "k8s_dev" {
   identifier          = "k8s_dev_infra"
-  project_id          = var.project
-  org_id              = var.org
+  project_id          = var.project[count.index]
+  org_id              = var.org[count.index]
   name                = "k8s-dev"
-  env_id              = harness_platform_environment.dev.identifier
+  env_id              = "dev"
   type                = "KubernetesDirect"
   yaml                = <<-EOT
     infrastructureDefinition:
-      name: ${harness_platform_environment.dev.name}
-      identifier: ${harness_platform_environment.dev.identifier}
+      name: "k8s_dev_infra"
+      identifier: k8s_dev_infra
       description: "dev"
       tags:
         dev: "dev"
-      orgIdentifier: ${var.org}
-      projectIdentifier: ${var.project}
-      environmentRef: ${harness_platform_environment.dev.identifier}
+      orgIdentifier: ${var.org[count.index]}
+      projectIdentifier: ${var.project[count.index]}
+      environmentRef: "dev"
       deploymentType: Kubernetes
       type: KubernetesDirect
       spec:
@@ -36,8 +35,8 @@ resource "harness_platform_infrastructure" "k8s_dev" {
         releaseName: release-<+INFRA_KEY>
         allowSimultaneousDeployments: false
       EOT
+  count = length(var.project)
 }
-*/
 
 resource "harness_platform_environment" "stage" {
   identifier = "stage"

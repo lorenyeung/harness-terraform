@@ -21,7 +21,7 @@ roles per org/project
 groups per org/project
 
 Example Pipelines per project:
-CD
+CD - done
 CI
 STO
 
