@@ -1,27 +1,33 @@
 
 resource "harness_platform_organization" "example" {
-  identifier = var.org
-  name       = var.org
+  identifier = var.org[count.index]
+  name       = var.org[count.index]
+  count = length(var.org)
 }
 
 resource "harness_platform_project" "example" {
-  identifier = var.project
-  name       = var.project
-  org_id     = var.org
+  identifier = var.project[count.index]
+  name       = var.project[count.index]
+  org_id     = var.org[count.index]
+    depends_on = [
+    harness_platform_organization.example
+  ]
+  count = length(var.project)
 }
 
 resource "harness_platform_pipeline" "example" {
   identifier = "terra_pipeline"
   name       = "name"
-  org_id     = var.org
-  project_id = var.project
+  org_id     = var.org[count.index]
+  project_id = var.project[count.index]
+  count = length(var.project)
   yaml       = <<-EOT
       pipeline:
           name: name
           identifier: identifier
           allowStageExecutions: false
-          projectIdentifier: ${var.project}
-          orgIdentifier: ${var.org}
+          projectIdentifier: ${var.project[count.index]}
+          orgIdentifier: ${var.org[count.index]}
           tags: {}
           stages:
               - stage:
@@ -102,4 +108,7 @@ resource "harness_platform_pipeline" "example" {
                               action:
                                   type: StageRollback
   EOT
+  depends_on = [
+    harness_platform_project.example
+  ]
 }

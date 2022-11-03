@@ -1,11 +1,16 @@
 resource "harness_platform_environment" "dev" {
   identifier = "dev"
   name   = "dev"
-  org_id = var.org
-  project_id = var.project
+  org_id = var.org[count.index]
+  project_id = var.project[count.index]
   type   = "PreProduction"
+  depends_on = [
+    harness_platform_project.example
+  ]
+  count = length(var.project)
 }
 
+/*
 resource "harness_platform_infrastructure" "k8s_dev" {
   identifier          = "k8s_dev_infra"
   project_id          = var.project
@@ -17,9 +22,9 @@ resource "harness_platform_infrastructure" "k8s_dev" {
     infrastructureDefinition:
       name: ${harness_platform_environment.dev.name}
       identifier: ${harness_platform_environment.dev.identifier}
-      description: ""
+      description: "dev"
       tags:
-        asda: ""
+        dev: "dev"
       orgIdentifier: ${var.org}
       projectIdentifier: ${var.project}
       environmentRef: ${harness_platform_environment.dev.identifier}
@@ -31,22 +36,21 @@ resource "harness_platform_infrastructure" "k8s_dev" {
         releaseName: release-<+INFRA_KEY>
         allowSimultaneousDeployments: false
       EOT
- 
-/*  kubernetes {
-    cloud_provider_name = harness_cloudprovider_kubernetes.demo.name
-    namespace           = harness_environment.dev.name
-    release_name        = "$${service.name}"
-  }*/
 }
+*/
 
 resource "harness_platform_environment" "stage" {
   identifier = "stage"
   name   = "stage"
-  org_id = var.org
-  project_id = var.project
+  org_id = var.org[count.index]
+  project_id = var.project[count.index]
   type   = "PreProduction"
+  depends_on = [
+    harness_platform_project.example
+  ]
+  count = length(var.project)
 }
-
+/*
 resource "harness_platform_infrastructure" "k8s_stage" {
   identifier          = "k8s_stage_infra"
   project_id          = var.project
@@ -58,9 +62,9 @@ resource "harness_platform_infrastructure" "k8s_stage" {
     infrastructureDefinition:
       name: ${harness_platform_environment.stage.name}
       identifier: ${harness_platform_environment.stage.identifier}
-      description: ""
+      description: "stage"
       tags:
-        asda: ""
+        stage: "stage"
       orgIdentifier: ${var.org}
       projectIdentifier: ${var.project}
       environmentRef: ${harness_platform_environment.stage.identifier}
@@ -72,22 +76,21 @@ resource "harness_platform_infrastructure" "k8s_stage" {
         releaseName: release-<+INFRA_KEY>
         allowSimultaneousDeployments: false
       EOT
-
-/*  kubernetes {
-    cloud_provider_name = harness_cloudprovider_kubernetes.demo.name
-    namespace           = harness_environment.stage.name
-    release_name        = "$${service.name}"
-  }*/
 }
+*/
 
 resource "harness_platform_environment" "prod" {
   identifier = "prod"
   name   = "prod"
-  org_id = var.org
-  project_id = var.project
+  org_id = var.org[count.index]
+  project_id = var.project[count.index]
   type   = "Production"
+  depends_on = [
+    harness_platform_project.example
+  ]
+  count = length(var.project)
 }
-
+/*
 resource "harness_platform_infrastructure" "k8s_prod" {
   identifier          = "k8s_prod_infra"
   project_id          = var.project
@@ -99,9 +102,9 @@ resource "harness_platform_infrastructure" "k8s_prod" {
     infrastructureDefinition:
       name: ${harness_platform_environment.prod.name}
       identifier: ${harness_platform_environment.prod.identifier}
-      description: ""
+      description: "prod"
       tags:
-        asda: ""
+        prod: "prod"
       orgIdentifier: ${var.org}
       projectIdentifier: ${var.project}
       environmentRef: ${harness_platform_environment.prod.identifier}
@@ -113,11 +116,6 @@ resource "harness_platform_infrastructure" "k8s_prod" {
         releaseName: release-<+INFRA_KEY>
         allowSimultaneousDeployments: false
       EOT
-
-/*  kubernetes {
-    cloud_provider_name = harness_cloudprovider_kubernetes.demo.name
-    namespace           = harness_environment.prod.name
-    release_name        = "$${service.name}"
-  }*/
 }
+*/
 

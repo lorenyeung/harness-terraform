@@ -3,7 +3,7 @@
 # }
 
 resource "harness_platform_secret_text" "github_token" {
-  identifier        = "helloTokenSecret"
+  identifier        = "${var.prefix}_helloTokenSecret"
   name              = "hello-github-token"
   value             = var.github_token
   value_type        = "Inline"
