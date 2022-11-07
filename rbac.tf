@@ -1,20 +1,20 @@
 resource "harness_platform_usergroup" "project_admin" {
-  org_id                    = var.org[count.index]
-  project_id                = var.project[count.index]  
-  identifier = "${var.project[count.index]}_admin"
-  name        = "${var.project[count.index]}_admin"
-  description = "Administrators of the ${var.project[count.index]} project."  
+  org_id                    = harness_platform_organization.example[count.index].id
+  project_id                = harness_platform_project.example[count.index].id
+  identifier = "${harness_platform_project.example[count.index].id}_admin"
+  name        = "${harness_platform_project.example[count.index].id}_admin"
+  description = "Administrators of the ${harness_platform_project.example[count.index].id} project."  
   count = length(var.project)
 }
 
 resource "harness_platform_role_assignments" "example" {
-  identifier                = "${var.project[count.index]}_admin_role_assign"
-  org_id                    = var.org[count.index]
-  project_id                = var.project[count.index]
-  resource_group_identifier = "_all_account_level_resources"
-  role_identifier           = "_account_viewer"
+  identifier                = "${harness_platform_project.example[count.index].id}_admin_role_assign"
+  org_id                    = harness_platform_organization.example[count.index].id
+  project_id                = harness_platform_project.example[count.index].id
+  resource_group_identifier = "_all_project_level_resources"
+  role_identifier           = "_project_viewer"
   principal {
-    identifier = "${var.project[count.index]}_admin"
+    identifier = harness_platform_usergroup.project_admin[count.index].id
     type       = "USER_GROUP"
   }
   disabled = false
@@ -22,13 +22,12 @@ resource "harness_platform_role_assignments" "example" {
   count = length(var.project)
 }
 
-
 resource "harness_platform_usergroup" "project_developer" {
-  org_id                    = var.org[count.index]
-  project_id                = var.project[count.index]  
-  identifier = "${var.project[count.index]}_dev"
-  name        = "${var.project[count.index]}_dev"
-  description = "Developers of the ${var.project[count.index]} project."
+  org_id                    = harness_platform_organization.example[count.index].id
+  project_id                = harness_platform_project.example[count.index].id  
+  identifier = "${harness_platform_project.example[count.index].id}_dev"
+  name        = "${harness_platform_project.example[count.index].id}_dev"
+  description = "Developers of the ${harness_platform_project.example[count.index].id} project."
   count = length(var.project)
 }
 

@@ -2,16 +2,16 @@
 resource "harness_platform_pipeline" "example" {
   identifier = "cd_example_pipeline"
   name       = "cd_example_pipeline"
-  org_id     = var.org[count.index]
-  project_id = var.project[count.index]
+  org_id     = harness_platform_organization.example[count.index].id
+  project_id = harness_platform_project.example[count.index].id
   count = length(var.project)
   yaml       = <<-EOT
       pipeline:
           name: cd_example_pipeline
           identifier: "cd_example_pipeline"
           allowStageExecutions: false
-          projectIdentifier: ${var.project[count.index]}
-          orgIdentifier: ${var.org[count.index]}
+          projectIdentifier: ${harness_platform_project.example[count.index].id}
+          orgIdentifier: ${harness_platform_organization.example[count.index].id}
           tags: {}
           stages:
               - stage:
@@ -21,7 +21,7 @@ resource "harness_platform_pipeline" "example" {
                   type: Deployment
                   spec:
                       serviceConfig:
-                          serviceRef: cd_example_service_${var.project[count.index]}
+                          serviceRef: cd_example_service_${harness_platform_project.example[count.index].id}
                           serviceDefinition:
                               type: Kubernetes
                               spec:
@@ -31,7 +31,7 @@ resource "harness_platform_pipeline" "example" {
                           infrastructureDefinition:
                               type: KubernetesDirect
                               spec:
-                                  connectorRef: k8s_connector_${var.project[count.index]}
+                                  connectorRef: k8s_connector_${harness_platform_project.example[count.index].id}
                                   namespace: dev
                                   releaseName: release-<+INFRA_KEY>
                           allowSimultaneousDeployments: false

@@ -1,18 +1,18 @@
 resource "harness_platform_environment" "dev" {
   identifier = "dev"
   name   = "dev"
-  org_id = var.org[count.index]
-  project_id = var.project[count.index]
+  project_id          = harness_platform_project.example[count.index].id
+  org_id              = harness_platform_organization.example[count.index].id
   type   = "PreProduction"
   count = length(var.project)
 }
 
 resource "harness_platform_infrastructure" "k8s_dev" {
   identifier          = "k8s_dev_infra"
-  project_id          = var.project[count.index]
-  org_id              = var.org[count.index]
+  project_id          = harness_platform_project.example[count.index].id
+  org_id              = harness_platform_organization.example[count.index].id
   name                = "k8s-dev"
-  env_id              = "dev"
+  env_id              = harness_platform_environment.dev[count.index].id
   type                = "KubernetesDirect"
   yaml                = <<-EOT
     infrastructureDefinition:
@@ -22,13 +22,13 @@ resource "harness_platform_infrastructure" "k8s_dev" {
       tags:
         terraform: "terraform"
         dev: "dev"
-      orgIdentifier: ${var.org[count.index]}
-      projectIdentifier: ${var.project[count.index]}
+      orgIdentifier: ${harness_platform_organization.example[count.index].id}
+      projectIdentifier: ${harness_platform_project.example[count.index].id}
       environmentRef: "dev"
       deploymentType: Kubernetes
       type: KubernetesDirect
       spec:
-        connectorRef: k8s_connector_${var.project[count.index]}
+        connectorRef: k8s_connector_${harness_platform_project.example[count.index].id}
         namespace: dev
         releaseName: release-<+INFRA_KEY>
         allowSimultaneousDeployments: false
@@ -39,18 +39,18 @@ resource "harness_platform_infrastructure" "k8s_dev" {
 resource "harness_platform_environment" "stage" {
   identifier = "stage"
   name   = "stage"
-  org_id = var.org[count.index]
-  project_id = var.project[count.index]
+  org_id = harness_platform_organization.example[count.index].id
+  project_id = harness_platform_project.example[count.index].id
   type   = "PreProduction"
   count = length(var.project)
 }
 
 resource "harness_platform_infrastructure" "k8s_stage" {
   identifier          = "k8s_stage_infra"
-  project_id          = var.project[count.index]
-  org_id              = var.org[count.index]
+  project_id          = harness_platform_project.example[count.index].id
+  org_id              = harness_platform_organization.example[count.index].id
   name                = "k8s-stage"
-  env_id              = "stage"
+  env_id              = harness_platform_environment.stage[count.index].id
   type                = "KubernetesDirect"
   yaml                = <<-EOT
     infrastructureDefinition:
@@ -60,13 +60,13 @@ resource "harness_platform_infrastructure" "k8s_stage" {
       tags:
         terraform: "terraform"
         stage: "stage"
-      orgIdentifier: ${var.org[count.index]}
-      projectIdentifier: ${var.project[count.index]}
+      orgIdentifier: ${harness_platform_organization.example[count.index].id}
+      projectIdentifier: ${harness_platform_project.example[count.index].id}
       environmentRef: "stage"
       deploymentType: Kubernetes
       type: KubernetesDirect
       spec:
-        connectorRef: k8s_connector_${var.project[count.index]}
+        connectorRef: k8s_connector_${harness_platform_project.example[count.index].id}
         namespace: stage
         releaseName: release-<+INFRA_KEY>
         allowSimultaneousDeployments: false
@@ -77,18 +77,18 @@ resource "harness_platform_infrastructure" "k8s_stage" {
 resource "harness_platform_environment" "prod" {
   identifier = "prod"
   name   = "prod"
-  org_id = var.org[count.index]
-  project_id = var.project[count.index]
+  org_id = harness_platform_organization.example[count.index].id
+  project_id = harness_platform_project.example[count.index].id
   type   = "Production"
   count = length(var.project)
 }
 
 resource "harness_platform_infrastructure" "k8s_prod" {
   identifier          = "k8s_prod_infra"
-  project_id          = var.project[count.index]
-  org_id              = var.org[count.index]
+  project_id          = harness_platform_project.example[count.index].id
+  org_id              = harness_platform_organization.example[count.index].id
   name                = "k8s-prod"
-  env_id              = "prod"
+  env_id              = harness_platform_environment.prod[count.index].id
   type                = "KubernetesDirect"
   yaml                = <<-EOT
     infrastructureDefinition:
@@ -98,13 +98,13 @@ resource "harness_platform_infrastructure" "k8s_prod" {
       tags:
         terraform: "terraform"
         prod: "prod"
-      orgIdentifier: ${var.org[count.index]}
-      projectIdentifier: ${var.project[count.index]}
+      orgIdentifier: ${harness_platform_organization.example[count.index].id}
+      projectIdentifier: ${harness_platform_project.example[count.index].id}
       environmentRef: "prod"
       deploymentType: Kubernetes
       type: KubernetesDirect
       spec:
-        connectorRef: k8s_connector_${var.project[count.index]}
+        connectorRef: k8s_connector_${harness_platform_project.example[count.index].id}
         namespace: prod
         releaseName: release-<+INFRA_KEY>
         allowSimultaneousDeployments: false
