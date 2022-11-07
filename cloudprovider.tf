@@ -1,4 +1,4 @@
-resource "harness_platform_connector_kubernetes" "demo" {
+resource "harness_platform_connector_kubernetes" "example" {
   name = "k8s_connector_${harness_platform_project.example[count.index].id}"
   identifier = "k8s_connector_${harness_platform_project.example[count.index].id}"
   tags = ["terraform:terraform"]
