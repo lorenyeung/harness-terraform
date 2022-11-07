@@ -7,10 +7,14 @@ variable "github_token" {
   description = "The github token for used for the git connector."
 }
 
-variable "application_name" {
-  description = "The name of the Harness application to be created."
-  default = "Harness Terraform Demo"
+variable "harness_account_id" {
+  description = "The Harness account ID"
 }
+
+variable "harness_apikey" {
+  description = "The Harness account API key. Will require account level privileges."
+}
+
 
 variable "prefix" {
   description = "A prefix to use to ensure account level settings are unique (i.e. cloud providers, secrets, connectors, etc.)."
@@ -29,10 +33,10 @@ variable "repository_branch" {
 
 variable "org" {
   description = "Harness org id to be created"
-  default = ["terra_id4","terra_id5","terra_id6"]
+  default = ["org1","org2"]
 }
 
 variable "project" {
   description = "Harness project id to be created"
-  default = ["terra_project","terra_project2","terra_project3"]
+  default = ["terra_project","terra_project2"]
 }

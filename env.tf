@@ -4,9 +4,6 @@ resource "harness_platform_environment" "dev" {
   org_id = var.org[count.index]
   project_id = var.project[count.index]
   type   = "PreProduction"
-  depends_on = [
-    harness_platform_project.example
-  ]
   count = length(var.project)
 }
 
@@ -45,9 +42,6 @@ resource "harness_platform_environment" "stage" {
   org_id = var.org[count.index]
   project_id = var.project[count.index]
   type   = "PreProduction"
-  depends_on = [
-    harness_platform_project.example
-  ]
   count = length(var.project)
 }
 
@@ -86,9 +80,6 @@ resource "harness_platform_environment" "prod" {
   org_id = var.org[count.index]
   project_id = var.project[count.index]
   type   = "Production"
-  depends_on = [
-    harness_platform_project.example
-  ]
   count = length(var.project)
 }
 

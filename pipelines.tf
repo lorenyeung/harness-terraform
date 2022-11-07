@@ -92,7 +92,4 @@ resource "harness_platform_pipeline" "example" {
                               action:
                                   type: StageRollback
   EOT
-  depends_on = [
-    harness_platform_project.example
-  ]
 }
