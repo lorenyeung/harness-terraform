@@ -9,12 +9,17 @@ resource "harness_platform_secret_text" "github_token" {
   value_type        = "Inline"
   //secret_manager_identifier = data.harness_secret_manager.default.id
   secret_manager_identifier = "harnessSecretManager"
+}
 
-  # usage_scope {
-  #   environment_filter_type = "NON_PRODUCTION_ENVIRONMENTS"
-  # }
+resource "harness_platform_connector_helm" "tf_bitnami" {
+  identifier = "tf_bitnami"
+  name = "tf_bitnami"
+  url = "https://charts.bitnami.com/bitnami"
+}
 
-  # usage_scope {
-  #   environment_filter_type = "PRODUCTION_ENVIRONMENTS"
-  # }
+resource "harness_platform_connector_docker" "tf_dockerhub" {
+  identifier = "tf_dockerhub"
+  name = "tf_dockerhub"
+  url = "https://registry.hub.docker.com/v2/"
+  type = "DockerHub"
 }

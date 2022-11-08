@@ -20,21 +20,29 @@ pipeline:
             description: ""
             type: Deployment
             spec:
-                serviceConfig:
+                deploymentType: Kubernetes
+                service:
                     serviceRef: ${harness_platform_service.example[count.index].id}
-                    serviceDefinition:
-                        type: Kubernetes
-                        spec:
-                            variables: []
-                infrastructure:
+                    serviceInputs:
+                        serviceDefinition:
+                            type: Kubernetes
+                            spec:
+                                manifests:
+                                    - manifest:
+                                        identifier: nginx_manifest
+                                        type: HelmChart
+                                        spec:
+                                            chartVersion: <+input>
+                                artifacts:
+                                    primaryArtifactRef: <+input>
+                                    primary:
+                                        primaryArtifactRef: <+input>
+                                        sources: <+input>        
+                environment:
                     environmentRef: ${harness_platform_environment.dev[count.index].id}
-                    infrastructureDefinition:
-                        type: KubernetesDirect
-                        spec:
-                            connectorRef: ${harness_platform_connector_kubernetes.example[count.index].id}
-                            namespace: ${harness_platform_environment.dev[count.index].id}
-                            releaseName: release-<+INFRA_KEY>
-                    allowSimultaneousDeployments: false
+                    deployToAll: false
+                    infrastructureDefinitions:
+                        - identifier: ${harness_platform_infrastructure.k8s_dev[count.index].id}
                 execution:
                     steps:
                         - stepGroup:
@@ -97,73 +105,82 @@ pipeline:
             description: ""
             type: Deployment
             spec:
-                serviceConfig:
+                deploymentType: Kubernetes
+                service:
                     useFromStage:
                         stage: deploy_dev
-                infrastructure:
+                environment:
                     environmentRef: ${harness_platform_environment.prod[count.index].id}
-                    infrastructureDefinition:
-                        type: KubernetesDirect
-                        spec:
-                            connectorRef: ${harness_platform_connector_kubernetes.example[count.index].id}
-                            namespace: ${harness_platform_environment.prod[count.index].id}
-                            releaseName: release-<+INFRA_KEY>
-                    allowSimultaneousDeployments: false
+                    deployToAll: false
+                    infrastructureDefinitions:
+                        - identifier: ${harness_platform_infrastructure.k8s_prod[count.index].id}
                 execution:
                     steps:
-                    - step:
-                        type: K8sCanaryDeploy
-                        name: canary
-                        identifier: canary
-                        spec:
-                            skipDryRun: true
-                            instanceSelection:
-                                type: Count
-                                spec:
-                                    count: 2
-                        timeout: 10m
-                        loopingStrategyEnabled: false
-                    - step:
-                        type: HarnessApproval
-                        name: manual-approval
-                        identifier: manualapproval
-                        spec:
-                            approvalMessage: Please review the following information and approve the pipeline progression
-                            includePipelineExecutionHistory: true
-                            approvers:
-                                userGroups:
-                                    - terra_project_release_manager
-                                minimumCount: 1
-                                disallowPipelineExecutor: false
-                            approverInputs: []
-                        timeout: 1d
-                    - step:
-                        type: K8sCanaryDelete
-                        name: delete
-                        identifier: delete
-                        spec:
-                            skipDryRun: false
-                        timeout: 10m
-                    - step:
-                        type: K8sRollingDeploy
-                        name: rollout
-                        identifier: rollout
-                        spec:
-                            skipDryRun: false
-                        timeout: 10m
-                    rollbackSteps:
-                    - step:
-                        name: Rollback Rollout Deployment
-                        identifier: rollbackRolloutDeployment
-                        type: K8sRollingRollback
-                        timeout: 10m
-                        spec: {}
-                tags: {}
-                failureStrategies:
-                - onFailure:
-                    errors:
-                        - AllErrors
-                    action:
-                        type: StageRollback
+                        - stepGroup:
+                            name: Canary Deployment
+                            identifier: canaryDepoyment
+                            steps:
+                                - step:
+                                    name: Canary Deployment
+                                    identifier: canaryDeployment
+                                    type: K8sCanaryDeploy
+                                    timeout: 10m
+                                    spec:
+                                        instanceSelection:
+                                            type: Count
+                                            spec:
+                                                count: 1
+                                    skipDryRun: false
+                                - step:
+                                    name: Canary Delete
+                                    identifier: canaryDelete
+                                    type: K8sCanaryDelete
+                                    timeout: 10m
+                                    spec: {}
+                        - step:
+                            type: HarnessApproval
+                            name: Approval
+                            identifier: Approval
+                            spec:
+                                approvalMessage: Please review the following information and approve the pipeline progression
+                                includePipelineExecutionHistory: true
+                                approvers:
+                                    userGroups:
+                                        - terra_project_release_manager
+                                    minimumCount: 1
+                                    disallowPipelineExecutor: true
+                                approverInputs: []
+                            timeout: 1d
+                        - stepGroup:
+                            name: Primary Deployment
+                            identifier: primaryDepoyment
+                            steps:
+                                - step:
+                                    name: Rolling Deployment
+                                    identifier: rollingDeployment
+                                    type: K8sRollingDeploy
+                                    timeout: 10m
+                                    spec:
+                                        skipDryRun: false
+                            rollbackSteps:
+                            - step:
+                                name: Canary Delete
+                                identifier: rollbackCanaryDelete
+                                type: K8sCanaryDelete
+                                timeout: 10m
+                                spec: {}
+                            - step:
+                                name: Rolling Rollback
+                                identifier: rollingRollback
+                                type: K8sRollingRollback
+                                timeout: 10m
+                                spec: {}
+            tags: {}
+            failureStrategies:
+            - onFailure:
+                errors: 
+                    - AllErrors
+                action:
+                    type: StageRollback
   EOT
 }
