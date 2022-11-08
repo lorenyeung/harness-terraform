@@ -38,3 +38,7 @@ variable "org" {
 variable "project" {
   description = "Harness project id to be created"
 }
+
+variable "pipeline_name" {
+  description = "Harness pipeline id to be created TODO"
+}

@@ -146,7 +146,7 @@ pipeline:
                                 includePipelineExecutionHistory: true
                                 approvers:
                                     userGroups:
-                                        - terra_project_release_manager
+                                        - ${harness_platform_usergroup.release_manager[count.index].id}
                                     minimumCount: 1
                                     disallowPipelineExecutor: true
                                 approverInputs: []
