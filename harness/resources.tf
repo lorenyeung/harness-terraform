@@ -35,7 +35,7 @@ resource "harness_platform_service" "example" {
                         store:
                           type: Http
                           spec:
-                            connectorRef: account.${harness_platform_connector_helm.tf_bitnami.id}
+                            connectorRef: ${harness_platform_connector_helm.tf_bitnami.id}
                         chartName: nginx
                         chartVersion: <+input>
                         helmVersion: V3
@@ -44,7 +44,7 @@ resource "harness_platform_service" "example" {
                   primaryArtifactRef: <+input>
                   sources:
                     - spec:
-                        connectorRef: account.${harness_platform_connector_docker.tf_dockerhub.id}
+                        connectorRef: ${harness_platform_connector_docker.tf_dockerhub.id}
                         imagePath: bitnami/nginx
                         tag: latest
                       identifier: nginx_docker  
@@ -52,7 +52,7 @@ resource "harness_platform_service" "example" {
                   primary:
                     sources:
                       - spec:
-                          connectorRef: account.tf_dockerhub
+                          connectorRef: ${harness_platform_connector_docker.tf_dockerhub.id}
                           imagePath: bitnami/nginx
                           tag: <+input>
                         identifier: nginx_docker
