@@ -40,3 +40,9 @@ variable "project" {
   description = "Harness project id to be created"
   default = ["terra_project","terra_project2"]
 }
+
+variable "pipeline_name" {
+}
+
+variable "s3_bucket_name" {
+}

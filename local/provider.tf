@@ -4,7 +4,15 @@ terraform {
       source = "harness/harness"
       version = "0.7.1"
     }
+    aws = {
+     source  = "hashicorp/aws"
+     version = "~> 4.38.0"
+   }
   }
+}
+
+provider "aws" {
+ region = "us-west-1"
 }
 
 #Configure the Harness provider for Next Gen resources

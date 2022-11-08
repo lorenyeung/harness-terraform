@@ -40,5 +40,5 @@ variable "project" {
 }
 
 variable "pipeline_name" {
-  description = "Harness pipeline id to be created TODO"
+  description = "Harness pipeline id to be created"
 }
