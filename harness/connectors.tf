@@ -11,6 +11,7 @@ resource "harness_platform_secret_text" "github_token" {
   project_id = harness_platform_project.example[count.index].id
   //secret_manager_identifier = data.harness_secret_manager.default.id
   secret_manager_identifier = "harnessSecretManager"
+  count = length(var.project)
 }
 
 resource "harness_platform_connector_helm" "tf_bitnami" {
@@ -19,6 +20,7 @@ resource "harness_platform_connector_helm" "tf_bitnami" {
   url = "https://charts.bitnami.com/bitnami"
   org_id = harness_platform_organization.example[count.index].id
   project_id = harness_platform_project.example[count.index].id
+  count = length(var.project)
 }
 
 resource "harness_platform_connector_docker" "tf_dockerhub" {
@@ -28,4 +30,5 @@ resource "harness_platform_connector_docker" "tf_dockerhub" {
   type = "DockerHub"
   org_id = harness_platform_organization.example[count.index].id
   project_id = harness_platform_project.example[count.index].id
+  count = length(var.project)
 }
