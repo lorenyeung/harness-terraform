@@ -42,3 +42,6 @@ variable "project" {
 variable "pipeline_name" {
   description = "Harness pipeline id to be created"
 }
+
+variable "s3_bucket_name" {
+}
