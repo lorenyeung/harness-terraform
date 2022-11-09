@@ -1,12 +1,11 @@
 resource "harness_platform_connector_kubernetes" "example" {
-  name = "k8s_connector_${harness_platform_project.example[count.index].id}"
-  identifier = "k8s_connector_${harness_platform_project.example[count.index].id}"
+  name = "k8s_connector_${harness_platform_project.example.id}"
+  identifier = "k8s_connector_${harness_platform_project.example.id}"
   tags = ["terraform:terraform"]
   inherit_from_delegate {
     delegate_selectors = ["mac"]
   }
-  org_id = harness_platform_organization.example[count.index].id
-  project_id = harness_platform_project.example[count.index].id
+  org_id = harness_platform_organization.example.id
+  project_id = harness_platform_project.example.id
   description = ""
-  count = length(var.project)
 }

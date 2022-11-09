@@ -2,16 +2,16 @@
 resource "harness_platform_pipeline" "example" {
   identifier = "cd_example_pipeline"
   name       = "cd_example_pipeline"
-  org_id     = harness_platform_organization.example[count.index].id
-  project_id = harness_platform_project.example[count.index].id
-  count = length(var.project)
+  org_id     = harness_platform_organization.example.id
+  project_id = harness_platform_project.example.id
+  
   yaml       = <<-EOT
 pipeline:
     name: cd_example_pipeline
     identifier: "cd_example_pipeline"
     allowStageExecutions: false
-    projectIdentifier: ${harness_platform_project.example[count.index].id}
-    orgIdentifier: ${harness_platform_organization.example[count.index].id}
+    projectIdentifier: ${harness_platform_project.example.id}
+    orgIdentifier: ${harness_platform_organization.example.id}
     tags: {}
     stages:
         - stage:
@@ -22,7 +22,7 @@ pipeline:
             spec:
                 deploymentType: Kubernetes
                 service:
-                    serviceRef: ${harness_platform_service.example[count.index].id}
+                    serviceRef: ${harness_platform_service.example.id}
                     serviceInputs:
                         serviceDefinition:
                             type: Kubernetes
@@ -39,10 +39,10 @@ pipeline:
                                         primaryArtifactRef: <+input>
                                         sources: <+input>        
                 environment:
-                    environmentRef: ${harness_platform_environment.dev[count.index].id}
+                    environmentRef: ${harness_platform_environment.dev.id}
                     deployToAll: false
                     infrastructureDefinitions:
-                        - identifier: ${harness_platform_infrastructure.k8s_dev[count.index].id}
+                        - identifier: ${harness_platform_infrastructure.k8s_dev.id}
                 execution:
                     steps:
                         - stepGroup:
@@ -110,10 +110,10 @@ pipeline:
                     useFromStage:
                         stage: deploy_dev
                 environment:
-                    environmentRef: ${harness_platform_environment.prod[count.index].id}
+                    environmentRef: ${harness_platform_environment.prod.id}
                     deployToAll: false
                     infrastructureDefinitions:
-                        - identifier: ${harness_platform_infrastructure.k8s_prod[count.index].id}
+                        - identifier: ${harness_platform_infrastructure.k8s_prod.id}
                 execution:
                     steps:
                         - stepGroup:
@@ -146,7 +146,7 @@ pipeline:
                                 includePipelineExecutionHistory: true
                                 approvers:
                                     userGroups:
-                                        - ${harness_platform_usergroup.release_manager[count.index].id}
+                                        - ${harness_platform_usergroup.release_manager.id}
                                     minimumCount: 1
                                     disallowPipelineExecutor: true
                                 approverInputs: []
