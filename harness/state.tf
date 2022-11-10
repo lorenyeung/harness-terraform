@@ -39,7 +39,7 @@ resource "aws_s3_bucket_public_access_block" "block" {
 terraform {
  backend "s3" {
    //bucket         = local.BUCKET_NAME
-   key            = "state/terraform.tfstate"
+   key            = "state/terraform.tfstate"+<+pipeline.identifier><+pipeline.sequenceId> //this needs to be dynamic and unique
    region         = "us-west-1"
    encrypt        = true
    kms_key_id     = "alias/aws/s3"
