@@ -5,7 +5,7 @@ resource "harness_platform_connector_kubernetes" "example" {
   inherit_from_delegate {
     delegate_selectors = ["mac"]
   }
-  org_id = harness_platform_organization.example.id
+  org_id = harness_platform_project.example.org_id
   project_id = harness_platform_project.example.id
   description = ""
 }

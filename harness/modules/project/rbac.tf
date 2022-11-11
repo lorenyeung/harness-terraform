@@ -1,5 +1,5 @@
 resource "harness_platform_usergroup" "project_admin" {
-  org_id                    = harness_platform_organization.example.id
+  org_id                    = harness_platform_project.example.org_id
   project_id                = harness_platform_project.example.id
   identifier = "${harness_platform_project.example.id}_admin"
   name        = "${harness_platform_project.example.id}_admin"
@@ -9,7 +9,7 @@ resource "harness_platform_usergroup" "project_admin" {
 
 resource "harness_platform_role_assignments" "project_admin" {
   identifier                = "${harness_platform_project.example.id}_admin_role_assign"
-  org_id                    = harness_platform_organization.example.id
+  org_id                    = harness_platform_project.example.org_id
   project_id                = harness_platform_project.example.id
   resource_group_identifier = "_all_project_level_resources"
   role_identifier           = "_project_admin"
@@ -23,7 +23,7 @@ resource "harness_platform_role_assignments" "project_admin" {
 }
 
 resource "harness_platform_usergroup" "project_developer" {
-  org_id                    = harness_platform_organization.example.id
+  org_id                    = harness_platform_project.example.org_id
   project_id                = harness_platform_project.example.id  
   identifier = "${harness_platform_project.example.id}_dev"
   name        = "${harness_platform_project.example.id}_dev"
@@ -33,7 +33,7 @@ resource "harness_platform_usergroup" "project_developer" {
 
 resource "harness_platform_role_assignments" "project_developer" {
   identifier                = "${harness_platform_project.example.id}_dev_role_assign"
-  org_id                    = harness_platform_organization.example.id
+  org_id                    = harness_platform_project.example.org_id
   project_id                = harness_platform_project.example.id
   resource_group_identifier = "_all_project_level_resources"
   role_identifier           = "_pipeline_executor"
@@ -47,7 +47,7 @@ resource "harness_platform_role_assignments" "project_developer" {
 }
 
 resource "harness_platform_usergroup" "release_manager" {
-  org_id                    = harness_platform_organization.example.id
+  org_id                    = harness_platform_project.example.org_id
   project_id                = harness_platform_project.example.id  
   identifier = "${harness_platform_project.example.id}_release_manager"
   name        = "${harness_platform_project.example.id}_release_manager"
@@ -57,7 +57,7 @@ resource "harness_platform_usergroup" "release_manager" {
 
 resource "harness_platform_role_assignments" "release_manager" {
   identifier                = "${harness_platform_project.example.id}_release_role_assign"
-  org_id                    = harness_platform_organization.example.id
+  org_id                    = harness_platform_project.example.org_id
   project_id                = harness_platform_project.example.id
   resource_group_identifier = "_all_project_level_resources"
   role_identifier           = "_pipeline_executor"

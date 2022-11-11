@@ -1,5 +1,5 @@
 resource "harness_platform_project" "example" {
-  org_id     = harness_platform_organization.example.id
+  org_id     = var.org
   identifier = var.project
   name       = var.project
 }
@@ -8,7 +8,7 @@ resource "harness_platform_service" "example" {
   identifier  = "cd_example_service_${harness_platform_project.example.id}"
   name        = "cd_example_service_${harness_platform_project.example.id}"
   description = "test"
-  org_id      = harness_platform_organization.example.id
+  org_id      = harness_platform_project.example.org_id
   project_id  = harness_platform_project.example.id
   yaml        = <<-EOT
           service:
