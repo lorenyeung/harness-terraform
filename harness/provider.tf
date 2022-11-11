@@ -7,12 +7,12 @@ terraform {
     aws = {
      source  = "hashicorp/aws"
      version = "~> 4.38.0"
-   }
+    }
   }
 }
 
 provider "aws" {
- region = "us-west-1"
+  region = "us-west-1"
 }
 
 #Configure the Harness provider for Next Gen resources
@@ -20,4 +20,24 @@ provider "harness" {
   endpoint         = "https://app.harness.io/gateway"
   account_id       = var.harness_account_id
   platform_api_key = var.harness_apikey
+}
+
+module "organization" {
+    source = "./modules/organization"
+    #other-input-variable = "..."
+}
+
+module "pipelines" {
+    source = "./modules/pipelines"
+    #other-input-variable = "..."
+}
+
+module "project" {
+    source = "./modules/project"
+    #other-input-variable = "..."
+}
+
+module "s3" {
+    source = "./modules/s3"
+    #other-input-variable = "..."
 }
