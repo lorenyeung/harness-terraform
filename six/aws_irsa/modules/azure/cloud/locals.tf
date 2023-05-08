@@ -1,5 +1,9 @@
+####################
+#
+# Harness Connector Azure Cloud Local Variables
+#
+####################
 locals {
-
   required_tags = [
     "created_by:Terraform"
   ]
@@ -16,31 +20,24 @@ locals {
     local.required_tags
   ])
 
-  # Secrets Management
-  secret_types = [
-    "file",
-    "text",
-    "sshkey"
-  ]
-
-  fmt_connector_type = lower(replace(replace(var.type, "_", "-"), "-", ""))
-
   fmt_identifier = (
-    lower(
-      replace(
+    var.identifier == null
+    ?
+    (
+      lower(
         replace(
           replace(
             var.name,
             " ",
             "_"
           ),
-          "_",
-          "-"
-        ),
-        "-",
-        ""
+          "-",
+          "_"
+        )
       )
     )
+    :
+    var.identifier
   )
 
   azure_environment_type = (
@@ -50,4 +47,5 @@ locals {
     :
     "AZURE"
   )
+
 }

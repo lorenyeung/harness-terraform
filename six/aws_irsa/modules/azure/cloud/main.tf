@@ -1,11 +1,9 @@
+####################
+#
+# Harness Connector Azure Cloud Setup
+#
+####################
 resource "harness_platform_connector_azure_cloud_provider" "azure" {
-  count = (
-    local.fmt_connector_type == "azure"
-    ?
-    1
-    :
-    0
-  )
 
   # [Required] (String) Unique identifier of the resource.
   identifier = local.fmt_identifier
@@ -126,4 +124,17 @@ resource "harness_platform_connector_azure_cloud_provider" "azure" {
     }
   }
 
+}
+
+# When creating a new Connector, there is a potential race-condition
+# as the connector comes up.  This resource will introduce
+# a slight delay in further execution to wait for the resources to
+# complete.
+resource "time_sleep" "connector_setup" {
+  depends_on = [
+    harness_platform_connector_azure_cloud_provider.azure
+  ]
+
+  create_duration  = "15s"
+  destroy_duration = "15s"
 }

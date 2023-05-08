@@ -1,14 +1,22 @@
-# When creating a new Connector, there is a potential race-condition
-# as the connector comes up.  This resource will introduce
-# a slight delay in further execution to wait for the resources to
-# complete.
-resource "time_sleep" "connector_setup" {
-  depends_on = [
-    harness_platform_connector_azure_cloud_provider.azure,
-    harness_platform_connector_github.github,
-    harness_platform_connector_kubernetes.kubernetes
-  ]
+####################
+#
+# Harness Content Default Module
+#
+####################
 
-  create_duration  = "15s"
-  destroy_duration = "15s"
+provider "harness" {
+  endpoint         = var.harness_platform_url
+  account_id       = var.harness_platform_account
+  platform_api_key = var.harness_platform_key
+}
+
+
+data "harness_platform_organization" "org" {
+  name = var.organization_name
+}
+
+
+data "harness_platform_project" "project" {
+  name   = var.project_name
+  org_id = data.harness_platform_organization.org.id
 }
