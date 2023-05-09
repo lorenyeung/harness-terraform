@@ -1,0 +1,1 @@
+{"Modules":[{"Key":"","Source":"","Dir":"."},{"Key":"aws","Source":"./modules/aws/cloud","Dir":"modules/aws/cloud"},{"Key":"azure","Source":"./modules/azure/cloud","Dir":"modules/azure/cloud"},{"Key":"harness_connectors","Source":"git::ssh://git@github.com/harness-community/terraform-harness-connectors.git","Dir":".terraform/modules/harness_connectors"}]}

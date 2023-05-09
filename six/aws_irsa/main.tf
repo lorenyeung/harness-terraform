@@ -20,3 +20,12 @@ data "harness_platform_project" "project" {
   name   = var.project_name
   org_id = data.harness_platform_organization.org.id
 }
+
+
+module "aws" {
+  source = "./modules/aws/cloud"
+  name = "test"
+
+    delegate_selectors = ["aws"]
+  
+}
