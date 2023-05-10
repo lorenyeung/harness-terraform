@@ -40,4 +40,5 @@ locals {
     var.identifier
   )
 
+  type = var.aws_credentials.type
 }

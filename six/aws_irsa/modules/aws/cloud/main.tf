@@ -43,8 +43,12 @@ resource "harness_platform_connector_aws" "aws" {
       []
     )
     content {
-      # (String) Client Id of the ManagedIdentity resource.
-      delegate_selectors = var.delegate_selectors
+      # [Required] (Set of String) The delegates to inherit the credentials from.
+      delegate_selectors = (length(var.delegate_selectors) > 0
+      ?
+      var.delegate_selectors
+      :
+      var.delegate_selectors)
     }
   }
 

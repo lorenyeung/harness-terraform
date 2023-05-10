@@ -21,14 +21,17 @@ data "harness_platform_project" "project" {
   org_id = data.harness_platform_organization.org.id
 }
 
-
 module "aws" {
   source = "./modules/aws/cloud"
-  name = "test"
+  name = "testaws"
   aws_credentials = {
     type = "irsa"
+    region = "west"
     role_arn = "testtest"
     external_id = "test"
+    
   }
+
+  
   
 }

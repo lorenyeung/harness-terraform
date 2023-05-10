@@ -96,6 +96,22 @@ variable "delegate_selectors" {
   type        = list(string)
   description = "[Optional] (Set of String) Tags to filter delegates for connection."
   default     = []
+
+  validation {
+    condition = (
+        
+          length(var.delegate_selectors) > 0
+          ?
+          true
+          :
+          false
+        )
+    
+        error_message = <<EOF
+        Validation of an object failed.
+            * [Optional] Provide a Map of Tags to associate with the project and resources created
+        EOF
+  }
 }
 
 variable "tags" {
@@ -141,10 +157,24 @@ variable "aws_credentials" {
           alltrue([
             for key in keys(var.aws_credentials) : (
               contains([
-                "type","region","role_arn","external_id"
+                "type","region","role_arn","external_id","delegate_selectors"
               ], key)
             )
           ])
+        ),
+        (
+          lookup(var.aws_credentials, "type", "invalid") != null
+          ?
+          contains(["irsa", "inherit_from_delegate","manual"], lower(lookup(var.aws_credentials, "type", "invalid")))
+          :
+          true
+        ),
+        (
+          lookup(var.aws_credentials, "region", "invalid") != null
+          ?
+          can(regex("^([a-zA-Z0-9-].*)$", lookup(var.aws_credentials, "region", null)))
+          :
+          true
         ),
         (
           lookup(var.aws_credentials, "role_arn", null) != null
