@@ -130,24 +130,43 @@ variable "global_tags" {
   }
 }
 
-# [Required] (Block List, Max: 1) Use IAM role for service accounts
-# variable "irsa" {
-#   # [Required] (Set of String) Tags to filter delegates for connection.
-#   delegate_selectors = var.delegate_selectors
-# }
+variable "aws_credentials" {
+    type        = map(any)
+  description = "[Required] (Map) AWS Connector Credentials."
 
-variable "cross_account_access" {
-  type        = bool
-  description = "[Optional] (Boolean) Execute on delegate or not."
-  default     = false
-  # has nested schema on pop up
-}
-
-# [Optional] (Boolean) Execute on delegate or not.
-variable "execute_on_delegate" {
-  type        = bool
-  description = "[Optional] (Boolean) Execute on delegate or not."
-  default     = true
+  validation {
+    condition = (
+      alltrue([
+        (
+          alltrue([
+            for key in keys(var.aws_credentials) : (
+              contains([
+                "type","region","role_arn","external_id"
+              ], key)
+            )
+          ])
+        ),
+        (
+          lookup(var.aws_credentials, "role_arn", null) != null
+          ?
+          can(regex("^([a-zA-Z0-9]{8})$", lookup(var.aws_credentials, "role_arn", null)))
+          :
+          true
+        ),
+      ])
+    )
+    error_message = <<EOF
+    Validation of an object failed. Credentials must include:
+        * type - [Required] (String) Type can either be delegate or service_principal.
+        * delegate_auth - [Conditionally Required] (String) Type can either be system or user. Mandatory if type == delegate
+        * tenant_id - [Conditionally Required] (String) Azure Tenant ID. Mandatory if type == service_principal
+        * client_id - [Conditionally Required] (String) Azure Service Principal or Managed Identity ID. Mandatory if type == delegate && delegate_auth == user OR type == service_principal
+        * secret_kind - [Conditionally Required] (String) Azure Client Authentication model can be either secret or certifiate. Mandatory if type == service_principal
+        * secret_location - [Optional] (String) Location within Harness that the secret is stored.  Supported values are "account", "org", or "project"
+        * secret_name - [Conditionally Required] (String) Existing Harness Secret containing Azure Client Authentication details. Mandatory if type == service_principal
+          - NOTE: Secrets stored at the Account or Organization level must include correct value for the secret_location
+    EOF
+  }
 }
 
 # [Required] (Map) AWS Connector Credentials.

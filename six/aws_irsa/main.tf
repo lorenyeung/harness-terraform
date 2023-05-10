@@ -25,7 +25,10 @@ data "harness_platform_project" "project" {
 module "aws" {
   source = "./modules/aws/cloud"
   name = "test"
-
-    delegate_selectors = ["aws"]
+  aws_credentials = {
+    type = "irsa"
+    role_arn = "testtest"
+    external_id = "test"
+  }
   
 }

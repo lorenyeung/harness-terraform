@@ -12,31 +12,31 @@ resource "harness_platform_connector_aws" "aws" {
   # [Optional] (String) Description of the resource.
   description = var.description
   # [Optional] (Block List, Max: 1) Inherit credentials from the delegate
-  dynamic "inherit_from_delegate" {
-        for_each = (
-      var.cross_account_access != {}
-      ?
-      var.cross_account_access == true
-      ?
-      [var.cross_account_access]
-      :
-      []
-      :
-      []
-    )
-    # [Required] (Set of String) Tags to filter delegates for connection.
-    content {
-    delegate_selectors = var.delegate_selectors
-    }    
-  }
+  # dynamic "inherit_from_delegate" {
+  #   for_each = (
+  #     var.aws_credentials != {}
+  #     ?
+  #     length(var.aws_credentials) > 0
+  #     ?
+  #     [var.aws_credentials]
+  #     :
+  #     []
+  #     :
+  #     []
+  #   )
+  #   # [Required] (Set of String) Tags to filter delegates for connection.
+  #   content {
+  #   delegate_selectors = var.delegate_selectors
+  #   }    
+  # }
 
   dynamic "irsa" {
     for_each = (
-      var.delegate_selectors != {}
+      var.aws_credentials != {}
       ?
-      length(var.delegate_selectors) > 0
+      length(var.aws_credentials) > 0
       ?
-      [var.delegate_selectors]
+      [var.aws_credentials]
       :
       []
       :
@@ -49,47 +49,47 @@ resource "harness_platform_connector_aws" "aws" {
   }
 
   # [Optional] (Block List, Max: 1) Use IAM role for service accounts
-  dynamic "manual" {
-        for_each = (
-      var.cross_account_access != {}
+#   dynamic "manual" {
+#     for_each = (
+#       var.aws_credentials != {}
+#       ?
+#       var.aws_credentials == true
+#       ?
+#       [var.aws_credentials]
+#       :
+#       []
+#       :
+#       []
+#     )
+#     content {
+# # req
+#       secret_key_ref = var.secret_key_ref
+#   # opt
+#       access_key = var.access_key
+#   # opt
+#       access_key_ref = var.access_key_ref
+#     }
+#   }
+
+  dynamic "cross_account_access" {
+    for_each = (
+      var.aws_credentials != {}
       ?
-      var.cross_account_access == true
+      length(keys(var.aws_credentials)) > 0
       ?
-      [var.cross_account_access]
+      [var.aws_credentials]
       :
       []
       :
       []
     )
     content {
-# req
-    secret_key_ref = var.secret_key_ref
-# opt
-    access_key = var.access_key
-# opt
-    access_key_ref = var.access_key_ref
+     # [Required] (String) The Amazon Resource Name (ARN) of the role that you want to assume. This is an IAM role in the target AWS account.
+     role_arn = cross_account_access.value.role_arn
+     # [Optional] (String) If the administrator of the account to which the role belongs provided you with an external ID, then enter that value
+     external_id = cross_account_access.value.external_id
     }
   }
-
-  # dynamic "cross_account_access" {
-  #   for_each = (
-  #     var.cross_account_access != {}
-  #     ?
-  #     length(keys(var.cross_account_access)) > 0
-  #     ?
-  #     [var.cross_account_access]
-  #     :
-  #     []
-  #     :
-  #     []
-  #   )
-  #   content {
-  #    # [Required] (String) The Amazon Resource Name (ARN) of the role that you want to assume. This is an IAM role in the target AWS account.
-  #    role_arn = var.role_arn
-  #    # [Optional] (String) If the administrator of the account to which the role belongs provided you with an external ID, then enter that value
-  #    external_id = var.external_id
-  #   }
-  # }
 
   # [Optional] (String) Unique identifier of the organization.
   org_id = var.organization_id
