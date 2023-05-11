@@ -96,22 +96,6 @@ variable "delegate_selectors" {
   type        = list(string)
   description = "[Optional] (Set of String) Tags to filter delegates for connection."
   default     = []
-
-  validation {
-    condition = (
-        
-          length(var.delegate_selectors) > 0
-          ?
-          true
-          :
-          false
-        )
-    
-        error_message = <<EOF
-        Validation of an object failed.
-            * [Optional] Provide a Map of Tags to associate with the project and resources created
-        EOF
-  }
 }
 
 variable "tags" {
@@ -146,122 +130,52 @@ variable "global_tags" {
   }
 }
 
-variable "aws_credentials" {
-    type        = map(any)
-  description = "[Required] (Map) AWS Connector Credentials."
 
-  validation {
-    condition = (
-      alltrue([
-        (
-          alltrue([
-            for key in keys(var.aws_credentials) : (
-              contains([
-                "type","region","role_arn","external_id","delegate_selectors"
-              ], key)
-            )
-          ])
-        ),
-        (
-          lookup(var.aws_credentials, "type", "invalid") != null
-          ?
-          contains(["irsa", "inherit_from_delegate","manual"], lower(lookup(var.aws_credentials, "type", "invalid")))
-          :
-          true
-        ),
-        (
-          lookup(var.aws_credentials, "region", "invalid") != null
-          ?
-          can(regex("^([a-zA-Z0-9-].*)$", lookup(var.aws_credentials, "region", null)))
-          :
-          true
-        ),
-        (
-          lookup(var.aws_credentials, "role_arn", null) != null
-          ?
-          can(regex("^([a-zA-Z0-9]{8})$", lookup(var.aws_credentials, "role_arn", null)))
-          :
-          true
-        ),
-      ])
-    )
-    error_message = <<EOF
-    Validation of an object failed. Credentials must include:
-        * type - [Required] (String) Type can either be delegate or service_principal.
-        * delegate_auth - [Conditionally Required] (String) Type can either be system or user. Mandatory if type == delegate
-        * tenant_id - [Conditionally Required] (String) Azure Tenant ID. Mandatory if type == service_principal
-        * client_id - [Conditionally Required] (String) Azure Service Principal or Managed Identity ID. Mandatory if type == delegate && delegate_auth == user OR type == service_principal
-        * secret_kind - [Conditionally Required] (String) Azure Client Authentication model can be either secret or certifiate. Mandatory if type == service_principal
-        * secret_location - [Optional] (String) Location within Harness that the secret is stored.  Supported values are "account", "org", or "project"
-        * secret_name - [Conditionally Required] (String) Existing Harness Secret containing Azure Client Authentication details. Mandatory if type == service_principal
-          - NOTE: Secrets stored at the Account or Organization level must include correct value for the secret_location
-    EOF
-  }
+# [Optional] (Boolean) Execute on delegate or not.
+variable "execute_on_delegate" {
+  type        = bool
+  description = "[Optional] (Boolean) Execute on delegate or not."
+  default     = true
 }
 
 # [Required] (Map) AWS Connector Credentials.
-# variable "aws_credentials" {
-#   type        = map(any)
-#   description = "[Required] (Map) AWS Connector Credentials."
+variable "credentials" {
+  type = any
+  description = "[Required] (Map) AWS Connector Credentials."
+    validation {
+      condition = contains(["manual","irsa","inherit_from_delegate"],var.credentials["type"])
+      error_message = "Allowed values are manual, irsa and inherit_from_delegate"
+    }
 
-#   validation {
-#     condition = (
-#       alltrue([
-#         (
-#           alltrue([
-#             for key in keys(var.aws_credentials) : (
-#               contains([
-#                 "type","region"
-#               ], key)
-#             )
-#           ])
-#         ),
-#         contains(["Irsa", "InheritFromDelegate"], lookup(var.aws_credentials, "type", "invalid")),
-#         (
-#           lookup(var.aws_credentials, "type", "invalid") == "delegate"
-#           ?
-#           lookup(var.aws_credentials, "delegate_auth", null) != null
-#           ?
-#           alltrue([
-#             contains(["system", "user"], lower(var.aws_credentials.delegate_auth)),
-#             (
-#               lower(var.aws_credentials.delegate_auth) == "user"
-#               ?
-#               can(regex("^([a-zA-Z0-9]{8}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{12})$", lookup(var.aws_credentials, "client_id", null)))
-#               :
-#               true
-#             )
-#           ])
-#           :
-#           true
-#           :
-#           true
-#         ),
-#         (
-#           lookup(var.aws_credentials, "type", "invalid") == "ManualConfig"
-#           ?
-#           alltrue([
-#             can(regex("^([a-zA-Z0-9]{8}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{12})$", lookup(var.aws_credentials, "accessKey", null))),
-#             can(regex("^([a-zA-Z0-9]{8}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{12})$", lookup(var.aws_credentials, "secretKeyRef", null))),
-#             contains(["secret", "certificate"], lower(lookup(var.aws_credentials, "secret_kind", "invalid"))),
-#             can(regex("^(account|org|project)$", lookup(var.aws_credentials, "secret_location", "project"))),
-#             can(regex("^([a-zA-Z0-9 _-])+$", lookup(var.aws_credentials, "secret_name", null)))
-#           ])
-#           :
-#           true
-#         )
-#       ])
-#     )
-#     error_message = <<EOF
-#         Validation of an object failed. Credentials must include:
-#             * type - [Required] (String) Type can either be delegate or service_principal.
-#             * delegate_auth - [Conditionally Required] (String) Type can either be system or user. Mandatory if type == delegate
-#             * tenant_id - [Conditionally Required] (String) Azure Tenant ID. Mandatory if type == service_principal
-#             * client_id - [Conditionally Required] (String) Azure Service Principal or Managed Identity ID. Mandatory if type == delegate && delegate_auth == user OR type == service_principal
-#             * secret_kind - [Conditionally Required] (String) Azure Client Authentication model can be either secret or certifiate. Mandatory if type == service_principal
-#             * secret_location - [Optional] (String) Location within Harness that the secret is stored.  Supported values are "account", "org", or "project"
-#             * secret_name - [Conditionally Required] (String) Existing Harness Secret containing Azure Client Authentication details. Mandatory if type == service_principal
-#               - NOTE: Secrets stored at the Account or Organization level must include correct value for the secret_location
-#         EOF
-#   }
-# }
+    validation {
+     condition = var.credentials.type == "irsa" ? contains(keys(var.credentials), "delegate_selectors") : true 
+     error_message = "For Type 'irsa' you must supply 'delegate_selectors'"
+    }
+
+    validation {
+     condition = var.credentials.type == "inherit_from_delegate" ? contains(keys(var.credentials), "delegate_selectors") : true 
+     error_message = "For Type 'inherit_from_delegate' you must supply 'delegate_selectors'"
+    }
+
+    validation {
+     condition = var.credentials.type == "manual" ? contains(keys(var.credentials), "secret_key_ref") : true 
+     error_message = "For Type 'manual' you must supply 'secret_key_ref'"
+    }
+
+    validation {
+     condition = var.credentials.type == "manual" ? contains(keys(var.credentials), "access_key_ref") || contains(keys(var.credentials), "access_key") : true 
+     error_message = "For Type 'manual' you must supply 'access_key' OR access_key_ref"
+    }
+
+
+    
+  }
+
+
+# [Required] (Map) AWS Connector Credentials.
+variable "cross_account_access" {
+  type        = map(any)
+  description = "[Required] (Map) AWS Cross Account Assumption"
+  default = null
+}
+
