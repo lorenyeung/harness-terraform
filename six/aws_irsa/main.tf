@@ -23,13 +23,11 @@ data "harness_platform_project" "project" {
 
 module "aws" {
   source = "./modules/aws/cloud"
-  name = "testaws"
-  aws_credentials = {
+  name = "aws_<+pipeline.variables.connector_name>"
+  credentials = {
     type = "irsa"
-    region = "west"
-    role_arn = "testtest"
-    external_id = "test"
-    
+    role_arn = "<+pipeline.variables.arn>"
+    external_id = "<+pipeline.variables.external_id>"
   }
 
   
