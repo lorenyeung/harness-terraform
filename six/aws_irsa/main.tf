@@ -26,8 +26,8 @@ module "aws" {
   name = "aws_<+pipeline.variables.connector_name>"
   credentials = {
     type = "irsa"
-    role_arn = "<+pipeline.variables.arn>"
-    external_id = "<+pipeline.variables.external_id>"
+    role_arn = <+pipeline.variables.arn>
+    external_id = <+pipeline.variables.external_id>
   }
 
   
