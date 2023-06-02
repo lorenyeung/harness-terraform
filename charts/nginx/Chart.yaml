@@ -1,27 +1,29 @@
-annotations:
-  category: Infrastructure
-apiVersion: v2
-appVersion: 1.21.2
-dependencies:
-- name: common
-  repository: https://charts.bitnami.com/bitnami
-  tags:
-  - bitnami-common
-  version: 1.x.x
-description: Chart for the nginx server
-home: https://github.com/bitnami/charts/tree/master/bitnami/nginx
-icon: https://bitnami.com/assets/stacks/nginx/img/nginx-stack-220x234.png
-keywords:
-- nginx
-- http
-- web
-- www
-- reverse proxy
 maintainers:
-- email: containers@bitnami.com
-  name: Bitnami
-name: nginx
+- name: "Bitnami"
+  email: "containers@bitnami.com"
+appVersion: "1.21.2"
+keywords:
+- "nginx"
+- "http"
+- "web"
+- "www"
+- "reverse proxy"
 sources:
-- https://github.com/bitnami/bitnami-docker-nginx
-- http://www.nginx.org
-version: 9.5.3
+- "https://github.com/bitnami/bitnami-docker-nginx"
+- "http://www.nginx.org"
+delegateName: "non"
+icon: "https://bitnami.com/assets/stacks/nginx/img/nginx-stack-220x234.png"
+annotations:
+  category: "Infrastructure"
+description: "Chart for the nginx server"
+acrregistry: "lorennonprod"
+version: "9.5.3"
+dependencies:
+- name: "common"
+  repository: "https://charts.bitnami.com/bitnami"
+  version: "1.x.x"
+  tags:
+  - "bitnami-common"
+home: "https://github.com/bitnami/charts/tree/master/bitnami/nginx"
+apiVersion: "v2"
+name: "nginx"
