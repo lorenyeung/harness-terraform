@@ -15,3 +15,10 @@ provider "harness" {
 provider "aws" {
   region = "us-west-1"
 }
+
+data "harness_platform_template" "example2" {
+  identifier = "datadog_private_locations_managed"
+  version    = "v1"
+  org_id     = "default"
+  project_id = "technical_exercise"
+}

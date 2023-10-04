@@ -1,0 +1,131 @@
+template:
+  name: datadog-private-locations-managed
+  identifier: datadog_private_locations_managed
+  orgIdentifier: default
+  projectIdentifier: technical_exercise
+  versionLabel: v1
+  type: Stage
+  spec:
+    type: Deployment
+    variables:
+      - name: gitRef
+        type: String
+        value: <+input>
+      - name: environmentRef
+        type: String
+        value: <+input>
+      - name: infrastructureRef
+        type: String
+        value: <+input>
+    spec:
+      deploymentType: Kubernetes
+      service:
+        serviceRef: datadog_private_locations_managed
+      environment:
+        environmentRef: <+stage.variables.environmentRef>
+        deployToAll: false
+        infrastructureDefinitions:
+          - identifier: <+stage.variables.infrastructureRef>
+            inputs:
+              identifier: <+stage.variables.infrastructureRef>
+              type: KubernetesDirect
+              spec:
+                namespace: dd-synthetics
+                releaseName: dd-synthetics-<+INFRA_KEY>
+      execution:
+        steps:
+          - step:
+              type: K8sApply
+              name: Apply
+              identifier: apply
+              spec:
+                filePaths:
+                  - manifests/condor
+                skipDryRun: false
+                skipSteadyStateCheck: false
+                skipRendering: false
+                overrides: []
+              timeout: 10m
+        rollbackSteps: []
+      serviceDependencies: []
+    failureStrategies:
+      - onFailure:
+          errors:
+            - AllErrors
+          action:
+            type: StageRollback
+
+# other 
+template:
+  name: datadog-private-locations-managed
+  identifier: datadog_private_locations_managed
+  orgIdentifier: default
+  projectIdentifier: technical_exercise
+  versionLabel: v1
+  type: Stage
+  spec:
+    type: Deployment
+    variables:
+      - name: gitRef
+        type: String
+        value: <+input>
+      - name: environmentRef
+        type: String
+        value: <+input>
+      - name: infrastructureRef
+        type: String
+        value: <+input>
+    spec:
+      deploymentType: Kubernetes
+      service:
+        serviceRef: datadog_private_locations_managed
+        serviceInputs:
+          serviceDefinition:
+            type: Kubernetes
+            spec:
+              variables:
+                - name: cluster
+                  type: String
+                  value: <+input>
+                - name: environmentId
+                  type: String
+                  value: <+input>
+                - name: environmentName
+                  type: String
+                  value: <+input>
+      environment:
+        environmentRef: <+stage.variables.environmentRef>
+        deployToAll: false
+        infrastructureDefinitions:
+          - identifier: <+stage.variables.infrastructureRef>
+            inputs:
+              identifier: <+stage.variables.infrastructureRef>
+              type: KubernetesDirect
+              spec:
+                namespace: dd-synthetics
+                releaseName: dd-synthetics-<+INFRA_KEY>
+      execution:
+        steps:
+          - step:
+              type: K8sApply
+              name: Apply
+              identifier: apply
+              spec:
+                filePaths:
+                  - manifests/condor
+                skipDryRun: false
+                skipSteadyStateCheck: false
+                skipRendering: false
+                overrides: []
+              timeout: 10m
+        rollbackSteps: []
+      serviceDependencies: []
+    failureStrategies:
+      - onFailure:
+          errors:
+            - AllErrors
+          action:
+            type: StageRollback
+
+
+template:\n  name: datadog-private-locations-managed2\n  identifier: identifier_template_data3\n  orgIdentifier: default\n  projectIdentifier: technical_exercise\n  versionLabel: test\n  type: Stage\n  spec:\n    type: Deployment\n    variables:\n      - name: gitRef\n        type: String\n        value: <+input>\n      - name: infrastructureRef\n        type: String\n        value: <+input>\n    spec:\n      deploymentType: Kubernetes\n      service:\n        serviceRef: datadog_private_locations_managed\n      environment:\n        environmentRef: <+stage.variables.environmentRef>\n        deployToAll: false\n        infrastructureDefinitions:\n          - identifier: <+stage.variables.infrastructureRef>\n            inputs:\n              identifier: <+stage.variables.infrastructureRef>\n              type: KubernetesDirect\n              spec:\n                namespace: dd-synthetics\n                releaseName: dd-synthetics-<+INFRA_KEY>\n      execution:\n        steps:\n          - step:\n              type: K8sApply\n              name: Apply\n              identifier: apply\n              spec:\n                filePaths:\n                  - manifests/condor\n                skipDryRun: false\n                skipSteadyStateCheck: false\n                skipRendering: false\n                overrides: []\n              timeout: 10m\n        rollbackSteps: []\n      serviceDependencies: []\n    failureStrategies:\n      - onFailure:\n          errors:\n            - AllErrors\n          action:\n            type: StageRollback\n\n","version_label":"test","entity_type":"Stage","child_type":"Deployment","scope":"project","version":0,"git_details":{"object_id":null,"branch_name":null,"file_path":null,"repo_name":null,"commit_id":null,"file_url":null,"repo_url":null},"updated":1686900009471,"store_type":"INLINE","connector_ref":null,"stable_template":true},"inputs":"type: Deployment\nvariables:\n  - name: gitRef\n    type: String\n    value: <+input>\n  - name: infrastructureRef\n    type: String\n    value: <+input>\n

@@ -41,3 +41,10 @@ module "s3" {
     source = "./modules/s3"
     #other-input-variable = "..."
 }
+
+data "harness_platform_template" "example2" {
+  identifier = "datadog_private_locations_managed"
+  version    = "v1"
+  org_id     = "default"
+  project_id = "technical_exercise"
+}
