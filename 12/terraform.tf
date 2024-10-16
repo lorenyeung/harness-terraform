@@ -13,7 +13,7 @@ terraform {
 
 ## Remote Pipeline template
 resource "harness_platform_template" "pipeline_template_remote" {
-  identifier = "identifier_template_data3"
+  identifier = "identifier_template_data4"
   org_id     = "default"
   project_id = "technical_exercise"
   name       = "datadog-private-locations-managed2"
